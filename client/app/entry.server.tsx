@@ -1,4 +1,4 @@
-import type { AppLoadContext, EntryContext } from "@remix-run/cloudflare";
+import type { EntryContext } from "@remix-run/cloudflare";
 import { RemixServer } from "@remix-run/react";
 import * as isbotModule from "isbot";
 
@@ -9,8 +9,7 @@ export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
   responseHeaders: Headers,
-  remixContext: EntryContext,
-  loadContext: AppLoadContext
+  remixContext: EntryContext
 ) {
   const body = await renderToReadableStream(
     <RemixServer context={remixContext} url={request.url} />,
@@ -42,8 +41,11 @@ function isBotRequest(userAgent: string | null) {
     return isbotModule.isbot(userAgent);
   }
 
-  if ("default" in isbotModule && typeof isbotModule.default === "function") {
-    return isbotModule.default(userAgent);
+  if ("default" in isbotModule) {
+    const maybeDefault: any = (isbotModule as any).default;
+    if (typeof maybeDefault === "function") {
+      return maybeDefault(userAgent);
+    }
   }
 
   return false;
