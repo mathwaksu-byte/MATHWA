@@ -249,7 +249,7 @@ When ready to deploy:
 4. Set up monitoring and alerts
 5. Test all features thoroughly
 6. Deploy to Cloudflare Pages (Client & Admin)
-7. Deploy API to Railway/Render
+7. Deploy API to Railway/Render.
 
 ---
 
