@@ -1,14 +1,16 @@
 import { createPagesFunctionHandler } from '@remix-run/cloudflare-pages'
 import * as build from './server/index.js'
 
-export const compatibility_date = '2024-11-16'
-export const compatibility_flags = ['nodejs_compat']
-
-export default {
-  async fetch(request, env, ctx) {
-    return createPagesFunctionHandler({
+export const onRequest = async (context) => {
+  try {
+    const handler = createPagesFunctionHandler({
       build,
-      getLoadContext: (context) => ({ env: context.env })
-    })(request, env, ctx)
+      getLoadContext: (ctx) => ({ env: ctx.env })
+    })
+    return await handler(context)
+  } catch (e) {
+    const message = e && typeof e === 'object' && 'message' in e ? String(e.message) : String(e)
+    const stack = e && typeof e === 'object' && 'stack' in e ? String(e.stack) : ''
+    return new Response(`Internal Error: ${message}\n${stack}`, { status: 500, headers: { 'Content-Type': 'text/plain' } })
   }
 }

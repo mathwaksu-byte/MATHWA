@@ -3,7 +3,7 @@ import { RemixServer } from "@remix-run/react";
 import * as isbotModule from "isbot";
 
 // Import from the browser build which includes renderToReadableStream
-import { renderToReadableStream } from "react-dom/server.browser";
+import { renderToReadableStream } from "react-dom/server";
 
 export default async function handleRequest(
   request: Request,
@@ -11,25 +11,31 @@ export default async function handleRequest(
   responseHeaders: Headers,
   remixContext: EntryContext
 ) {
-  const body = await renderToReadableStream(
-    <RemixServer context={remixContext} url={request.url} />,
-    {
-      onError(error: unknown) {
-        console.error(error);
-        responseStatusCode = 500;
-      },
+  try {
+    const body = await renderToReadableStream(
+      <RemixServer context={remixContext} url={request.url} />,
+      {
+        onError(error: unknown) {
+          console.error(error);
+          responseStatusCode = 500;
+        },
+      }
+    );
+
+    if (isBotRequest(request.headers.get("user-agent"))) {
+      await body.allReady;
     }
-  );
 
-  if (isBotRequest(request.headers.get("user-agent"))) {
-    await body.allReady;
+    responseHeaders.set("Content-Type", "text/html");
+    return new Response(body, {
+      headers: responseHeaders,
+      status: responseStatusCode,
+    });
+  } catch (e: any) {
+    const message = e && typeof e === "object" && "message" in e ? String(e.message) : String(e);
+    const stack = e && typeof e === "object" && "stack" in e ? String(e.stack) : "";
+    return new Response(`SSR Error: ${message}\n${stack}`, { status: 500, headers: { "Content-Type": "text/plain" } });
   }
-
-  responseHeaders.set("Content-Type", "text/html");
-  return new Response(body, {
-    headers: responseHeaders,
-    status: responseStatusCode,
-  });
 }
 
 function isBotRequest(userAgent: string | null) {

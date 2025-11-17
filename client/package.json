@@ -6,7 +6,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix vite:build && node -e \"const fs=require('fs'); fs.mkdirSync('build/server',{recursive:true}); fs.copyFileSync('build/server/index.js','build/server/index.js'); fs.copyFileSync('build/client/_worker.js','build/_worker.js');\"",
+    "build": "remix vite:build && node -e \"const fs=require('fs'); try{fs.copyFileSync('build/client/_worker.js','build/_worker.js');}catch(e){} try{fs.rmSync('build/client/_worker.js');}catch(e){} try{const p='build/server/index.js'; let s=fs.readFileSync(p,'utf8'); s=s.replace(/\"build\\\\client\"/g, '\"build/client\"'); fs.writeFileSync(p,s);}catch(e){}\"",
     "dev": "remix vite:dev",
     "lint": "eslint --ext .ts,.tsx --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
