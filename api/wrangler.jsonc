@@ -1,0 +1,11 @@
+{
+  "name": "mathwa-api-worker",
+  "main": "src/worker.ts",
+  "compatibility_date": "2024-11-16",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": {
+    "CLIENT_URL": "https://client.example.com",
+    "ADMIN_URL": "https://admin.example.com"
+  }
+}
+
