@@ -1,4 +1,5 @@
-import type { LinksFunction, MetaFunction } from '@remix-run/react';
+import type { MetaFunction } from '@remix-run/react';
+import type { LinksFunction } from '@remix-run/cloudflare';
 import {
   Links,
   LiveReload,
@@ -27,7 +28,7 @@ export default function App() {
   // Apply admin-configured background gradient and enforce Emerald Teal site-wide.
   useEffect(() => {
     // Remove any previous local overrides to ensure consistent brand background
-    try { if (typeof window !== 'undefined') window.localStorage.removeItem('app-bg'); } catch {}
+    try { if (typeof window !== 'undefined') window.localStorage.removeItem('app-bg'); } catch (e) { void e }
     const envBase = (import.meta as any).env?.PUBLIC_SERVER_BASE_URL as string | undefined;
     const bases = [
       ...(envBase ? [envBase] : []),
@@ -47,7 +48,7 @@ export default function App() {
         if (r && r.ok) { settings = await r.json(); break; }
       }
       apply(settings?.settings?.background_gradient_css);
-    })().catch(() => {});
+    })().catch((e) => { void e });
   }, []);
   return (
     <html lang="en">

@@ -1,4 +1,5 @@
-import type { ActionFunctionArgs, MetaFunction } from '@remix-run/react';
+import type { MetaFunction } from '@remix-run/react';
+import type { ActionFunctionArgs } from '@remix-run/cloudflare';
 import { Form, useActionData } from '@remix-run/react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -9,9 +10,9 @@ export const meta: MetaFunction = () => ([
   { name: 'description', content: 'Submit your application through MATHWA — Official Partner of I. Arabaev Kyrgyz State University.' },
 ]);
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request, context }: ActionFunctionArgs) {
   const fd = await request.formData();
-  const envBase = (import.meta.env.PUBLIC_SERVER_BASE_URL as string | undefined);
+  const envBase = ((context as any)?.env?.PUBLIC_SERVER_BASE_URL as string | undefined) || ((import.meta as any)?.env?.PUBLIC_SERVER_BASE_URL as string | undefined);
   const bases = [
     ...(envBase ? [envBase] : []),
     'http://localhost:3001',
@@ -30,9 +31,9 @@ export async function action({ request }: ActionFunctionArgs) {
         const r = await fetch(`${b}/api/uploads/single`, { method: 'POST', body: upForm });
         if (r.ok) {
           const j = await r.json();
-          return j?.file?.url as string | undefined;
+          return (j as any)?.file?.url as string | undefined;
         }
-      } catch {}
+      } catch (e) { void e }
     }
     return undefined as string | undefined;
   };
@@ -59,7 +60,7 @@ export async function action({ request }: ActionFunctionArgs) {
         if (r && r.ok) {
           return { ok: true } as ActionData;
         }
-      } catch {}
+      } catch (e) { void e }
     }
     return { ok: false, message: 'Failed to submit application' } as ActionData;
   } catch {
@@ -85,7 +86,7 @@ export default function Apply() {
         // dataLayer for tracking if available
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (window as any).dataLayer?.push({ event: 'apply_form_submit', phone: phoneMasked });
-      } catch {}
+      } catch (e) { void e }
     }
   }, [result, phoneMasked]);
   return (

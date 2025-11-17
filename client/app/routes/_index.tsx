@@ -1,5 +1,5 @@
 import type { MetaFunction } from '@remix-run/react';
-import { motion } from 'framer-motion';
+import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
 import { useLoaderData, useNavigation } from '@remix-run/react';
 import TrustBadges from '../components/TrustBadges';
 import Stats from '../components/Stats';
@@ -22,9 +22,9 @@ type FeaturedUniversity = {
 };
 type University = FeaturedUniversity;
 
-export async function loader() {
+export async function loader({ context }: LoaderFunctionArgs) {
   try {
-    const envBase = import.meta.env.PUBLIC_SERVER_BASE_URL as string | undefined;
+    const envBase = (context as any)?.env?.PUBLIC_SERVER_BASE_URL as string | undefined || (import.meta as any)?.env?.PUBLIC_SERVER_BASE_URL as string | undefined;
     const bases = [
       ...(envBase ? [envBase] : []),
       'http://localhost:3001',
@@ -76,7 +76,7 @@ export async function loader() {
 }
 
 export default function Index() {
-  const { featured, universities, settings } = useLoaderData<typeof loader>();
+  const { universities, settings } = useLoaderData<typeof loader>();
   const navigation = useNavigation();
   const isLoading = navigation.state !== 'idle';
   return (

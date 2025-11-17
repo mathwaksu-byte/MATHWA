@@ -1,4 +1,5 @@
-import type { LoaderFunctionArgs, MetaFunction } from '@remix-run/react';
+import type { MetaFunction } from '@remix-run/react';
+import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
 import { useLoaderData } from '@remix-run/react';
 import { useEffect, useRef, useState } from 'react';
 
@@ -16,9 +17,9 @@ type University = {
   hostel_info?: string;
 };
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params, context }: LoaderFunctionArgs) {
   const slug = params.slug ?? '';
-  const envBase = import.meta.env.PUBLIC_SERVER_BASE_URL as string | undefined;
+  const envBase = (context as any)?.env?.PUBLIC_SERVER_BASE_URL as string | undefined || (import.meta as any)?.env?.PUBLIC_SERVER_BASE_URL as string | undefined;
   const bases = [
     ...(envBase ? [envBase] : []),
     'http://localhost:3001',

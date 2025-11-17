@@ -1,7 +1,7 @@
-import type { LoaderFunctionArgs } from '@remix-run/react';
+import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
 
-export async function loader({}: LoaderFunctionArgs) {
-  const base = (import.meta.env.PUBLIC_APP_BASE_URL as string) || 'http://localhost:5173';
+export async function loader({ context }: LoaderFunctionArgs) {
+  const base = ((context as any)?.env?.PUBLIC_APP_BASE_URL as string) || ((import.meta as any)?.env?.PUBLIC_APP_BASE_URL as string) || 'http://localhost:5173';
   const urls = [
     `${base}/`,
     `${base}/about`,
@@ -21,4 +21,3 @@ export async function loader({}: LoaderFunctionArgs) {
 }
 
 export default function Sitemap() { return null; }
-

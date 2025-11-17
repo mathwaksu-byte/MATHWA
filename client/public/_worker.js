@@ -6,6 +6,9 @@ export const compatibility_flags = ['nodejs_compat']
 
 export default {
   async fetch(request, env, ctx) {
-    return createPagesFunctionHandler({ build })(request, env, ctx)
+    return createPagesFunctionHandler({
+      build,
+      getLoadContext: (context) => ({ env: context.env })
+    })(request, env, ctx)
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 type Variant = {
   id: string;
@@ -87,7 +87,6 @@ const VARIANTS: Variant[] = [
 ];
 
 export default function BackgroundVariants() {
-  const [current, setCurrent] = useState<string>('');
 
   useEffect(() => {
     // Read initial value if previously set
@@ -96,19 +95,16 @@ export default function BackgroundVariants() {
     if (init) {
       document.documentElement.style.setProperty('--app-bg', init);
     }
-    setCurrent(init);
-  }, []);
+    }, []);
 
   const apply = (css: string) => {
     document.documentElement.style.setProperty('--app-bg', css);
-    try { window.localStorage.setItem('app-bg', css); } catch {}
-    setCurrent(css);
+    try { window.localStorage.setItem('app-bg', css); } catch (e) { void e }
   };
 
   const reset = () => {
     document.documentElement.style.removeProperty('--app-bg');
-    try { window.localStorage.removeItem('app-bg'); } catch {}
-    setCurrent('');
+    try { window.localStorage.removeItem('app-bg'); } catch (e) { void e }
   };
 
   return (

@@ -26,7 +26,7 @@ export const universitiesAPI = {
 
 // Applications
 export const applicationsAPI = {
-  submit: (data: any) => api.post('/applications', data),
+  submit: (data: unknown) => api.post('/applications', data),
 };
 
 // Stats
@@ -52,7 +52,7 @@ export const blogsAPI = {
 
 // Contact
 export const contactAPI = {
-  submit: (data: any) => api.post('/contact', data),
+  submit: (data: unknown) => api.post('/contact', data),
 };
 
 // Uploads
@@ -75,7 +75,7 @@ export const uploadsAPI = {
 export const paymentsAPI = {
   createOrder: (amount: number, application_id: string, purpose?: string) =>
     api.post('/payments/create-order', { amount, application_id, purpose }),
-  verify: (data: any) => api.post('/payments/verify', data),
+  verify: (data: unknown) => api.post('/payments/verify', data),
 };
 
 export default api;
