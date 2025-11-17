@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "set PORT=3001 && nodemon src/index.js",
     "start": "set PORT=3001 && node src/index.js",
+    "build": "echo Cloudflare Pages Functions",
     "setup": "node src/scripts/setup-database.js"
   },
   "keywords": [
