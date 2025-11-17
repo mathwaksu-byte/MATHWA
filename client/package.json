@@ -6,7 +6,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "build": "remix vite:build && xcopy /E /Y build\\server build\\ && copy /Y build\\client\\_worker.js build\\_worker.js",
+    "build": "remix vite:build && node -e \"const fs=require('fs'); fs.copyFileSync('build/client/_worker.js','build/_worker.js');\"",
     "dev": "remix vite:dev",
     "lint": "eslint --ext .ts,.tsx --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
